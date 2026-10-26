@@ -44,6 +44,8 @@ tr.sel td{background:rgba(128,128,128,.12)}tbody tr{cursor:pointer}
 #il{background:rgb(var(--l))}#if{background:rgb(var(--f))}
 th img.mav{width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:4px}
 [hidden]{display:none!important}
+.seg{margin-top:12px}.seghd{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--mut)}.seghd b{font-size:20px;color:var(--tx)}
+.prog{height:8px;border-radius:4px;background:var(--bd);overflow:hidden;margin:6px 0 4px}.prog i{display:block;height:100%;background:var(--tx);transition:width .6s}
 </style>
 </head>
 <body>
@@ -57,7 +59,7 @@ th img.mav{width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-al
   <div class="c who rev"><img class="av" id="af" alt="Flávio Bolsonaro" hidden><i class="av ini" id="if">F</i><div class="r"><small>Flávio Bolsonaro (PL) · 22</small><b class="F" id="pf">–</b><small id="vf"></small></div></div>
  </div>
  <div class="bar"><i id="bl" style="width:50%;background:rgb(var(--l))"></i><i id="bf" style="width:50%;background:rgb(var(--f))"></i></div>
- <div class="sub" id="ap">Carregando dados do TSE…</div>
+ <div class="seg"><div class="seghd"><span>Seções totalizadas</span><b id="apn">–</b></div><div class="prog"><i id="apb" style="width:0"></i></div><div class="sub" id="ap">Carregando dados do TSE…</div></div>
  <div id="st"></div>
  <button id="rf" onclick="manual()" style="margin-top:10px;padding:8px 14px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font-weight:600;cursor:pointer">↻ Atualizar agora</button>
 </div>
@@ -98,7 +100,7 @@ function parse(j){
  if(j.dv==='n')return null;
  const c=cands(j.carg||j);if(c.length<2)return null;
  const L=c.find(x=>String(x.n)==='13'),F=c.find(x=>String(x.n)==='22');if(!L||!F)return null;
- return {l:num(L.vap),f:num(F.vap),ap:num((j.s||{}).pst),sl:L.sqcand,sf:F.sqcand};
+ return {l:num(L.vap),f:num(F.vap),ap:num((j.s||{}).pst),st:num((j.s||{}).st),ts:num((j.s||{}).ts),sl:L.sqcand,sf:F.sqcand};
 }
 async function get(uf,id){const r=await fetch(url(uf,id),{cache:'no-store'});if(!r.ok)throw 0;return parse(await r.json())}
 
@@ -130,7 +132,8 @@ function top_(d){
  $('pl').textContent=pct(pl);$('pf').textContent=pct(pf);
  $('vl').textContent=fmt(d.l)+' votos válidos';$('vf').textContent=fmt(d.f)+' votos válidos';
  $('bl').style.width=pl+'%';$('bf').style.width=pf+'%';
- $('ap').textContent=pct(d.ap)+' das seções totalizadas';
+ $('apn').textContent=pct(d.ap);$('apb').style.width=Math.min(d.ap,100)+'%';
+ $('ap').textContent=d.ts?fmt(d.st)+' de '+fmt(d.ts)+' seções totalizadas':pct(d.ap)+' das seções totalizadas';
 }
 const COD={11:'RO',12:'AC',13:'AM',14:'RR',15:'PA',16:'AP',17:'TO',21:'MA',22:'PI',23:'CE',24:'RN',25:'PB',26:'PE',27:'AL',28:'SE',29:'BA',31:'MG',32:'ES',33:'RJ',35:'SP',41:'PR',42:'SC',43:'RS',50:'MS',51:'MT',52:'GO',53:'DF'};
 const GEO_URL='https://servicodados.ibge.gov.br/api/v3/malhas/paises/BR?intrarregiao=UF&formato=application/vnd.geo+json&qualidade=minima';
